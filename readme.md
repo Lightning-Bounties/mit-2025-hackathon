@@ -2,7 +2,6 @@
 
 _March 27, 2025_
 
-**⚠️ Tutorial currently under construction. Will be "official" on April 1, 2025**
 
 This will allow you to build Lightning Network Apps ("L-Apps") without putting real funds at risk. And then convert that app to real Bitcoin/Lightning.
 
@@ -55,7 +54,11 @@ _45 mins_
 - Repeat for other node
 - Here's a guide that's a little out-of-date[2](#footnotes): https://docs.voltage.cloud/dev-sandbox-mutinynet
 
-## Run LNBits locally (or on repl.it)
+## Run LNBits on replit - `Track1`
+
+- Use this option if you are less comfortable running Git and Docker on your own computer, if you chose this section head over to the insturctions here: [replit-setup.md](./replit-setup.md)
+
+## Run LNBits locally with Docker - `Track2`
 - Clone down LNBits: https://github.com/lnbits/lnbits
 ```bash
 git clone git@github.com:lnbits/lnbits.git 
@@ -197,6 +200,19 @@ Pay invoice:
 
 ## First look at using the API
 - View quickstart API tutorial on the right sidebar
+![api-peek](./assets/lnbits-api-doc.png)
+
+- You can view the two possible keys we'll use: `Admin` `Invoice/Read` for this _specific wallet_ (not LNBits as a whole)
+
+- We can view how to do the main API activities.
+    - If you don't see this, make sure the window is maximized.
+    - We'll use curl here, but any http client will hit the API endpoints.
+- For example here's an example to create an invoice:
+```bash
+# curl -X POST https://be14032c-0834-49da-b999-00c40fef6ab0-00-302bsxtytmji9.janeway.replit.dev/api/v1/payments -d '{"out": false, "amount": 2, "memo": "pay me!"}' -H "X-Api-Key: 34f3fa90d11d4253a22a33fd3941b434" -H "Content-type: application/json"
+```
+
+**Note:** if you are on replit, you can use either `localhost:5000` or the preview URL for the app. If you are on docker, send these curls to `localhost:5000`
 
 ---
 
@@ -205,7 +221,12 @@ _Pay coins between your nodes programmatically_
 
 _45 mins_
 
+**Let's head over here to build an app:**
+https://github.com/super-jaba/lnbits-demo
 
+This app will communicate with our LNBits server, which in turn communicates to MutinyNet LightningNode.
+
+**TODO - add this to replit**
 ---
 
 ## Footnotes
@@ -225,4 +246,3 @@ _45 mins_
 - _Will Sutton [github.com/sutt](https://github.com/sutt)_
 - _Pavel [github.com/super-jaba](https://github.com/super-jaba)_
 
-**Special Thanks to:**
