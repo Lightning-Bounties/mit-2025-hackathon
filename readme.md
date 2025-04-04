@@ -2,7 +2,6 @@
 
 _March 27, 2025_
 
-
 This will allow you to build Lightning Network Apps ("L-Apps") without putting real funds at risk. And then convert that app to real Bitcoin/Lightning.
 
 Tutorial for the MIT Bitcoin Hackathon 2025. Register [here](https://mitbitcoin.devpost.com/) to participate and head to the discord to ask questions.
@@ -239,6 +238,7 @@ This app will communicate with our LNBits server, which in turn communicates to 
     - you can use login with github
     - don't have real sats on the lightning network, maybe ask someone?
 - How to convert from Mutinynet ("test network") to Mainnet ("real bitcoin").
+- Another guide from [Brandon Lucas](https://github.com/thebrandonlucas) on MutinyNet: https://blucas.ghost.io/voltage-for-developers-bitcoin-core-mutinynet/
 
 ---
 
