@@ -45,6 +45,7 @@ _45 mins_
 ### Create a Mutinynet Node
 - These should be available for zero compute credits so you can create them for free.
 - This will take ten minutes to sync with the chain so let's get that out of the way.
+- Create another node if you desire multiple nodes
 - Note bene: you may notice there is button on this admin page which says "Launch LNBits" which looks appealing. Unfortunately this button doesn't work on testnet
 #### Coins & Channels
 - Unlock your node via the unlock button in top right and entering your password
@@ -65,30 +66,51 @@ git clone git@github.com:lnbits/lnbits.git
 - The main branch ("dev") should work fine, current version is ~`1.0.0rc9`
 
 ### Run with Docker
+- Create an env at project root: `cp .env.example .env.node.1`
+- Make a persistence volume in project root: `mkdir data && mkdir data/node.1`
+- If you want to create multiple nodes:
+    - Create an env at project root: `cp .env.example .env.node.2`
+    - Make a persistance volume in project root: `mkdir data/node.2`
+    - Repeat for additional nodes
 - Build the image with docker
 ```bash
 docker build -t local/lnbits .
 ```
-- Make a persistence volume in project root: `mkdir data`
-- Copy the `.env.example` at root to `.env`:
 - run with docker per project's [instructions](https://github.com/lnbits/lnbits/blob/main/docs/guide/installation.md#option-4-docker): (Note this assumes you are running this command from the project root.)
 ```bash
 docker run \
     --detach \
-    --name lnbits-mutiny-1
+    --name lnbits-mutiny-1 \
     --publish 5000:5000 \
-    --volume ${PWD}/.env:/app/.env \
-    --volume ${PWD}/data/:/app/data \
+    --volume ${PWD}/.env.node.1:/app/.env \
+    --volume ${PWD}/data/node.1:/app/data \
     local/lnbits
 ```
+- run command again for multiple nodes. Change container name, system port(publish), and persistence volume below
+```bash
+docker run \
+    --detach \
+    --name lnbits-mutiny-2 \ 
+    --publish 5001:5000 \
+    --volume ${PWD}/.env.node.2:/app/.env \
+    --volume ${PWD}/data/node.2:/app/data \
+    local/lnbits
+```    
 - Remember this command needs to be run from project root due to the `PWD` variable.
 - Verify it works: it should be available on http://localhost:5000
 - Create an admin user and password, 
-    we suggest just user: user, password: password
+    we suggest user: user, password: password
 - You should now see a wallet.
 - You should be in Admin Setup View in VoidWallet mode.
-    - You should see "VoidWallet" warning in the top right. We'll fix that next.
+    - You should see "VoidWallet" warning in the top right
+    - To change this, go to Settings on the left side
+    - Then select LndRestWallet
+    - If you're still experiencing issues open `.env.node.1`, `env.node.2`, etc. then change the settings below
+      - uncomment LNBITS_ALLOWED_FUNDING_SOURCES
+      - LNBITS_ADMIN_UI=false
+      - LNBITS_BACKEND_WALLET_CLASS=LndRestWallet
 - Grab your `usr` id from Top Right > My Account > Account Settings > User ID. Paste this somewhere in case your browser logs you out.
+- If applicable, repeat for multiple nodes
 
 ### Connect LNBits to node on voltage
 We want to get the following settings to fill for the next section: `LND_REST_ENDPOINT`,`LND_REST_MACAROON`, and `LND_REST_CERT`.
@@ -113,22 +135,26 @@ We want to get the following settings to fill for the next section: `LND_REST_EN
 
 >A helpfule guide with more visuals is [here](https://docs.voltage.cloud/dev-sandbox-mutinynet).
 
-#### Modify `.env`
-Find where these settings live and comment out the initial values, fill them with your new settings
+#### Modify `.env.node.1`
+Find where these settings live and comment out the initial values, fill them with your new settings. Don't forget the port number (8080) after `subdomain.domain` below
 ```bash
 LND_REST_ENDPOINT="<subdomain.domain:port>" # my-node-name.u.voltageapp.io:8080
 LND_REST_CERT=""  # deliberate blank string
 LND_REST_MACAROON="AgEDbG5kAvgBAwo...="  # paste your full one here
 ```
 
+***If Multiple Nodes (`.env.node.2` and etc.), repeat sections "Find connection settings on Voltage admin" and "Modify `.env.node.1`"***
+
 #### Re-run the docker with modifications:
 ```bash
 docker stop lnbits-mutiny-1  # should take ~20 secs to shutdown
 docker start lnbits-mutiny-1  # should take ~20 secs to startup
 ```
+- If applicable, rerun for multiple nodes
 
 #### Verify its working:
-- Head back to `http://localhost:5000/` Verify the site loads.
+- Head back to `http://localhost:5000/` Verify the site loads
+- If applicable, repeat for multiple nodes `http://localhost:5001/` and etc.
 - Now you'll perform several actions outlined ion more detail in the section below[`#WebUI`](#webui---using-lnbits-in-the-browser).
     - Now create a wallet and give it a name.
     - Now create an invoice. 
@@ -184,6 +210,7 @@ ble to connect to https://mutiny-1.u.voltageapp.io:8080.'
 - **Recieve seed payment from us:**
     - Generate an invoice for 10,000 sats in your `AppWallet` and send it to us in discord. 
     - Now you need to recieve your . Or use a workaround (TODO - add this later)
+- If applicable, repeat steps for multiple nodes
 
 ## Recieve & Pay between your wallets
 - Create invoice in the wallet with no sats
@@ -195,6 +222,7 @@ Pay invoice:
     - pay
     - view history
     - try to pay too much
+- If applicable, you can Receive & Pay between multiple nodes
 
 
 ## First look at using the API
